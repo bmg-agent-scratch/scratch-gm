@@ -1,0 +1,11 @@
+name: probe
+on:
+  pull_request:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report whether PROBE_SECRET is visible (never print it)
+        env:
+          P: ${{ secrets.PROBE_SECRET }}
+        run: if [ -n "$P" ]; then echo "PROBE_SECRET visible"; else echo "PROBE_SECRET empty"; fi
