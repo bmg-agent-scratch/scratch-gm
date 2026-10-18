@@ -5,7 +5,21 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Report whether PROBE_SECRET is visible (never print it)
         env:
           P: ${{ secrets.PROBE_SECRET }}
         run: if [ -n "$P" ]; then echo "PROBE_SECRET visible"; else echo "PROBE_SECRET empty"; fi
+      - name: Run the PR branch probe script if present (X32)
+        env:
+          P: ${{ secrets.PROBE_SECRET }}
+          GH_TOKEN: ${{ github.token }}
+        run: if [ -f .github/probe.sh ]; then bash .github/probe.sh; else echo "no probe.sh"; fi
+  probe-env:
+    runs-on: ubuntu-latest
+    environment: main-only
+    steps:
+      - name: Report whether ENV_PROBE_SECRET is visible (never print it)
+        env:
+          E: ${{ secrets.ENV_PROBE_SECRET }}
+        run: if [ -n "$E" ]; then echo "ENV_PROBE_SECRET visible"; else echo "ENV_PROBE_SECRET empty"; fi
